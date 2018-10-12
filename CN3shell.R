@@ -1,0 +1,219 @@
+##################################################################################
+# CN3shell.R
+#
+# simulation of elemental abundance relative to hydrogen
+#
+# Produces summary plots for single nova
+##################################################################################
+library(sfsmisc)
+library(magicaxis)
+library(MASS)
+library(lattice)
+library(plotrix)
+
+##################################################################################
+
+# plotting transparency
+alphap <- 0.0
+ 
+#col1 <- "red"
+#col2 <- "orange"
+#col3 <- "blue"
+#col4 <- "black" 
+
+# for colors, see:
+# http://colorbrewer2.org/#type=sequential&scheme=YlOrRd&n=4
+col1 <- "#e31a1c"
+col2 <- "#fd8d3c"
+col3 <- "#fecc5c"
+col4 <- "#ffffb2" 
+
+# symbols
+# character
+ch1 <- 19
+ch2 <- 19
+ch3 <- 19
+ch4 <- 19
+# size
+sz1 <- 1.0
+sz2 <- 1.0
+sz3 <- 1.0
+sz4 <- 1.0
+ 
+##################################################################################
+
+roundDown <- function(x) 10^floor(log10(x))
+roundUp <- function(x) 10^ceiling(log10(x))
+
+##################################################################################
+# DISPLAYED RESULTS ARE FOR ALL SOLUTIONS 
+##################################################################################
+## make multi-panel graph;
+## set margins in order south, west, north, east
+## oma is "outer margin" of entire figure
+## mar is the margin of individual panels, which sets margin sizes in
+##    order bottom, left, top, right
+## mfcol=c(nrows, ncols) fills in the matrix by columns 
+## tck sets tick mark lengths; negative value makes them point
+##    outward
+## las=1 shows tick mark labels in horizontal orientation
+## mgp sets axis label locations relative to edge of inner plot window;
+###   first value represents label locations [xlab, ylab], the second
+###   the tick mark labels, the third the tick marks; default is c(3,1,0)
+
+# name of file with simulations
+simu <- read.table("CN3shell_b.out", header=TRUE, skip=3, na.strings = "NA")
+
+## redirect graphic output to pdf file  
+pdf(file="CN3shell_b.pdf",width=8,height=5,onefile=F)
+
+par(mfcol=c(2,2), mar=c(3,5,0,1), oma=c(1.0,2.0,3.0,2.0), tck=0.05, 
+    las=1, mgp=c(0,0.1,0))
+
+######## PLOT lt ##################################################################
+# Tpeak versus rhopeak
+plot( 1, type="n", lwd=2, xlim=c(0.1,0.5), ylim=c(10,1e5), 
+       main="", xlab = "", ylab = "", axes=FALSE,
+       cex=1.0, cex.lab=1.0, cex.axis=1.2, cex.main=1.0, log="xy" )
+# control distance tick mark labels and axis
+# don't touch first number
+# second number controls distance tick mark labels and axis
+# don't touch third number
+magaxis(mgp=c(0,0.2,0), minorn=0, cex=1.0, cex.lab=1.0, cex.main=1.0, cex.axis=1.2)
+box()
+
+# control distance between axis and label [line=...]
+title(xlab=expression(paste("T" [peak]," (GK)")), line=2.0, cex.lab=1.5)  
+title(ylab=expression(paste(rho [peak]," (g/cm"^"3",")")), line=1.7, cex.lab=1.5)
+
+# add simulations
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 3.0 & simu[i,9] <= 5.0) {
+      points(simu[i,1]/1e9, simu[i,2], col=col4, pch=ch4, cex=sz4)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 2.0 & simu[i,9] <= 3.0){
+      points(simu[i,1]/1e9, simu[i,2], col=col3, pch=ch3, cex=sz3)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 1.5 & simu[i,9] <= 2.0) {
+      points(simu[i,1]/1e9, simu[i,2], col=col2, pch=ch2, cex=sz2)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] <= 1.5) {
+      points(simu[i,1]/1e9, simu[i,2], col=col1, pch=ch1, cex=sz1)
+    }    
+}
+
+######## PLOT lb ##################################################################
+## timeT versus timerho
+plot( 1, type="n", lwd=2, xlim=c(10.0,1.0e3), ylim=c(10.0,1.0e3), 
+       main="", xlab = "", ylab = "", 
+       cex=1.0, cex.lab=1.0, cex.main=1.0, cex.axis=1.0, log="xy", axes=FALSE )
+# control distance tick mark labels and axis
+# don't touch first number
+# second number controls distance tick mark labels and axis
+# don't touch third number
+magaxis(mgp=c(0,0.4,0), minorn=0, cex=1.0, cex.lab=1.0, cex.main=1.0, cex.axis=1.2)
+box()
+
+# control distance between axis and label [line=...]
+title(xlab=expression(paste(tau [T]," (s)")), line=1.9, cex.lab=1.5)
+title(ylab=expression(paste(tau [rho]," (s)")), line=1.8, cex.lab=1.5)
+
+# add simulations
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 3.0 & simu[i,9] <= 5.0) {
+      points(simu[i,4], simu[i,5], col=col4, pch=ch4, cex=sz4)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 2.0 & simu[i,9] <= 3.0){
+      points(simu[i,4], simu[i,5], col=col3, pch=ch3, cex=sz3)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 1.5 & simu[i,9] <= 2.0) {
+      points(simu[i,4], simu[i,5], col=col2, pch=ch2, cex=sz2)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] <= 1.5) {
+      points(simu[i,4], simu[i,5], col=col1, pch=ch1, cex=sz1)
+    }    
+}
+
+######## PLOT rt ##################################################################
+## total O versus total C
+plot( 1, type="n", lwd=2, ylim=c(1.0,10.0), xlim=c(0.3,6.0), 
+       main="", xlab = "", ylab = "", 
+       cex=1.0, cex.lab=1.0, cex.main=1.0, cex.axis=1.0, log="xy", axes=FALSE )
+# control distance tick mark labels and axis
+# don't touch first number
+# second number controls distance tick mark labels and axis
+# don't touch third number
+magaxis(mgp=c(0.0,0.3,0.0), minorn=0, cex=1.0, cex.lab=1.0, cex.main=1.0, cex.axis=1.2)
+box()
+
+# control distance between axis and label [line=...]
+title(ylab=expression(paste("X"[WD],"(",NULL^"12","C",")","/","X"[WD],"(",NULL^"16","O",")")), line=1.9, cex.lab=1.5)
+title(xlab=expression(paste(Mixing," ",f)), line=2.0, cex.lab=1.5)
+
+# add simulations
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 3.0 & simu[i,9] <= 5.0) {
+      points(simu[i,8], simu[i,6]/simu[i,7], col=col4, pch=ch4, cex=sz4)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 2.0 & simu[i,9] <= 3.0){
+      points(simu[i,8], simu[i,6]/simu[i,7], col=col3, pch=ch3, cex=sz3)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] >= 1.5 & simu[i,9] <= 2.0) {
+      points(simu[i,8], simu[i,6]/simu[i,7], col=col2, pch=ch2, cex=sz2)
+    }
+}
+for (i in 1:length(simu$ratio_max)) {
+    if(simu[i,9] <= 1.5) {
+      points(simu[i,8], simu[i,6]/simu[i,7], col=col1, pch=ch1, cex=sz1)
+    }    
+}
+
+######## PLOT rb ##################################################################
+plot( 1, type="n", lwd=2, xlim=c(0.3,1.0), ylim=c(0.05,0.45), 
+       main="", xlab = "", ylab = "", axes=FALSE,
+       cex=1.0, cex.lab=1.0, cex.axis=1.2, cex.main=1.0, log="" )
+
+# control distance tick mark labels and axis
+# don't touch first number
+# second number controls distance tick mark labels and axis
+# don't touch third number
+magaxis(mgp=c(0,0.2,0), minorn=0, cex=1.0, cex.lab=1.0, cex.main=1.0, cex.axis=1.2)
+box()
+
+# control distance between axis and label [line=...]
+title(xlab=expression(paste("X"[WD],"(",NULL^"12","C",")")), line=1.8, cex.lab=1.5)
+title(ylab=expression(paste("X"[WD],"(",NULL^"16","O",")")), line=1.8, cex.lab=1.5)
+
+# add simulations
+#points(simu[,6], simu[,7], col=simu$col, pch=19, cex=1.0)
+
+
+
+###################################################################################
+
+# plot legend
+par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
+legend("top", c("<1.5", "<2.0", "<3.0", "<5.0"), xpd = TRUE, horiz = TRUE, 
+     inset = c(0, 0), bty = "n", pch = c(ch1,ch2,ch3,ch4), col = c(col1, col2, 
+     col3, col4), cex = 1.2)
+
+dev.off( )
+
+

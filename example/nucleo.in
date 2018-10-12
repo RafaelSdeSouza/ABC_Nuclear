@@ -1,0 +1,36 @@
+********************************************************************************************        
+0                                       ! ITEST: 0=run; 1=print network                             
+0                                       ! ILAST=0: long output; ILAST=3: rates multiplied by        
+                                        ! factors listed in prob.dat/short output                   
+--------------------------------------------------------------------------------------------        
+nucleo.dat                              ! NETWORK INPUT FILE                                        
+reactions.dat                           ! REACTION RATE LIBRARY FILE                                
+convertWeak.out                         ! WEAK RATE FILE                                            
+--------------------------------------------------------------------------------------------        
+3                                       ! INMODE:                                                   
+0.030d9,1.0d2,5.0e12                    ! T(K),rho(g/cm3),TLAST(s)				    INMODE=1                  
+proTest.dat,4.99E+12,1.0,1.0,1.0        ! profilename,TLAST(s),scale1,scale2,scale3 INMODE=2        
+2.70e8,3.33e4,1.0e4,763.0,586.0         ! T(K),rho(g/cm3),TLAST(s),scale1,scale2    INMODE=3                              
+*jj060_50.pro,2.93E+13,0.0              ! multi-shell,TLAST(s),dconv [instant mix.] INMODE=4        
+Ghina4600.pro,1.4e16,0.0                ! multi-shell,TLAST(s),dconv [no mix.]     	INMODE=5        
+--------------------------------------------------------------------------------------------        
+1                                       ! NETWORK SOLVER: 0=Wagoner; 1=Gear                         
+1.0d-3                                  ! EPS/errscale [Wag: <1.0d-6; Gear: 1.0d-3 to 1.0d-6]       
+1.0d-12                                 ! YTMIN/esc [Wag: <1.0d-8; Gear: 1.0d-8 to 1.0d-12]         
+500000                                  ! NLAST (default=50000) max. number time steps              
+1.0e-25,1                               ! XLAST,ISF  [stop if isotope #ISF has X<XLAST]             
+1.0d-20                                 ! DELTA0 [initial time step (in s)]                         
+0.25                                    ! etascale [accuracy; only for GEAR: 0.25]                  
+5.0                                     ! DELFAC [time step<DELTA/DELFAC; only for WAGONER]         
+--------------------------------------------------------------------------------------------        
+1                                       ! IWEAK: 0=lab rates; 1=stellar rates                       
+--------------------------------------------------------------------------------------------        
+0                                       ! IFLUX: 0=do not print; 1=print fluxes to output           
+5,11                                    ! ILAST=0 only: print 2 isotope abundances on screen        
+1,7,8,31,34,35,36                       ! ILAST=0 only: print 7 isotope abundances to output        
+--------------------------------------------------------------------------------------------        
+0                                       ! change rates individually (0=no/1=yes)                    
+2                                       ! number of rates to change; include reverse rates          
+623,100.d0                              ! 14N(p,g)                                                  
+1455,0.0                                ! 35Cl(p,g)                                                 
+                                                                                                    
