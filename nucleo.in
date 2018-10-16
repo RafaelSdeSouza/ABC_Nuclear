@@ -1,6 +1,6 @@
 ********************************************************************************************        
 0                                       ! ITEST: 0=run; 1=print network                             
-0                                       ! ILAST=0: long output; ILAST=3: rates multiplied by        
+3                                       ! ILAST=0: long output; ILAST=3: rates multiplied by        
                                         ! factors listed in prob.dat/short output                   
 --------------------------------------------------------------------------------------------        
 nucleo.dat                              ! NETWORK INPUT FILE                                        

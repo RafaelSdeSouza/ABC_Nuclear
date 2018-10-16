@@ -1,6 +1,6 @@
-c=======================================================================
-c     ===================================================             |
+c*********************************************************************|
       program CN3shell
+c*********************************************************************|
 c
 c     CLASSICAL NOVA NUCLEOSYNTHESIS
 c
@@ -9,9 +9,10 @@ c
 c     shell assumes INMODE=3 [exponentially decaying profile];
 c     it samples:
 c
-c     - WD outer core composition
-c     - mixing between outer WD core and aacreted solar matter
 c     - T_peak, rho_peak, tau_T, tau_rho
+c     - WD outer core composition
+c     - mixing between outer WD core and accreted solar matter;
+c       mixing factor defined as: 1 part WD matter, ff parts solar matter 
 c
 c     USER INPUT 
 c     - sampling ranges of these parameters [now listed in input file]
@@ -31,12 +32,15 @@ c     fractions or mass fractions normalized to hydrogen mass fraction
 c
 c     OUTPUT
 c     * only if simulated and observed abundances agree for all observed
-c     * elements within a factor of 5:
+c     * elements within a factor of 10:
+c
 c     CN3shell_a.out: simulated elemental mass fractions or mass fraction
 c                     relative to X_H, depending on flag in input 
 c     CN3shell_b.out: sampled parameters 
+c
 c     * only if simulated and observed abundances agree for all observed
 c     * elements within user-defined factor, uf:
+c
 c     CN3shell_c.out: sampled isotopic abundances and reaction rate
 c                     variation factors
 c
@@ -110,68 +114,10 @@ c     xexp(i) is now the ratio relative to hydrogen
       close(601)
 
 c=======================================================================
-c   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-c   USER INPUT USER INPUT USER INPUT USER INPUT
-c     this is the maximum difference, ratio_max, when option of
-c     rate variations is chosen 
+c     for reaction rate variations: 
+c     output results if agreement between observed and simulated elemental 
+c     abundances is better than factor uf 
       uf=1.5d0
-c   RANGES FOR PARAMETER SAMPLING     
-c     profile parameters: Tpeak, rhopeak, 1/e decay times 
-c     temperature in K
-cc      temp_min=1.0d8
-cc      temp_max=4.0d8
-c     TESTS:
-cc      temp_min=3.4d8
-cc      temp_max=3.4d8
-      
-c     density in g/cm3
-cc      rhop_min=1.0d1
-cc      rhop_max=1.0d5
-c     TESTS:
-cc      rhop_min=7.4d2
-cc      rhop_max=7.6d2
-
-c     time in seconds
-cc      timetem_min=1.0d1
-cc      timetem_max=1.0d3
-c     TESTS:
-cc      timetem_min=200.0d0
-cc      timetem_max=200.0d0
-
-c     time in seconds
-cc      timerho_min=1.0d1
-cc      timerho_max=1.0d3
-c     TESTS:
-cc      timerho_min=50.0d0
-cc      timerho_max=50.0d0
-            
-c     set WD outer core composition for sampling
-c     CO WD: O calcuated as 1 - X(C) - X(Ne)
-cc      xwd_o16_min=0.10d0          
-cc      xwd_o16_max=0.40d0          
-cc      xwd_ne22_min=0.00d0
-cc      xwd_ne22_max=0.02d0
-c     TESTS:   
-cc      xwd_o16_min=0.50d0          ! x_c12=0.50
-cc      xwd_o16_max=0.50d0          
-cc      xwd_ne22_min=0.00d0
-cc      xwd_ne22_max=0.00d0
-  
-c     mix: pre-mixing fraction of WD and solar matter; 
-c          1 part of WD matter and ff parts solar matter 
-c     f = 0.5          ! 67% WD
-c     f = 1.0          ! 50% WD
-c     f = 3.0          ! 25% WD 
-c     f = 4.0          ! 20% WD
-c     f = 5.0          ! 17% WD
-c     range of pre-mixing ff:
-cc      f_min=0.5d0    
-cc      f_max=5.0d0       
-c     TESTS: 
-cc      f_min=1.0d0    
-cc      f_max=1.0d0      
-      
-c   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c=======================================================================
 
 c     for sampling, a log scale is of advantage
@@ -353,8 +299,11 @@ c        nucleo.dat
          open(223,file='nucleo.dat',status='unknown')
          open(224,file='nucleo_shell.dat',status='unknown')
 
+c        !!!!!!!!!!!
 c        following index values apply to INITIAL abundances;
-c        !!they do not label the isotope number!!                   
+c        they do not label the isotope number
+c        !!!!!!!!!!!
+                   
 c        abundances of CO white dwarf
 c        ...first, set everything to zero                
          do 141 jj=1,nini
@@ -366,7 +315,7 @@ c        ...then input WD abundances
          xwd(19)=xwd_ne22    ! 22Ne
 
 c        ...draw random mixing fraction [1 part WD with ff parts solar]:
-c        X_mix = (X_WD + ff X_solar)/(1+f)
+c        X_mix = (X_WD + ff*X_solar)/(1+ff)
 
          lgf=lgf_min+(lgf_max-lgf_min)*ran1(nseed)
          ff=10.d0**lgf
@@ -432,8 +381,8 @@ c        randomize rates (choice.eq.'y')
 c        ==============================================================
 c        run nucleo     
          call SYSTEM('./nucleo')
-
 c        ==============================================================
+
 c        see if "RUN STOP OKAY"          
          lll=0
          open(707,file='nucleo.out',status='unknown')
@@ -532,8 +481,10 @@ c        ==============================================================
 c        if iflag=1: 
 c        divide all computed elemental abundances by hydrogen abundance
          if(iflag.eq.1)then
+            if(xf(1).lt.0.d0) goto 200      ! stop run if X(1H)<0.0
             do 111 jj=1,24
                xx(jj)=xx(jj)/x_h
+c               write(6,*) xx(jj)
  111        continue
          endif
 c        ==============================================================
@@ -557,7 +508,7 @@ c        determine maximum ratio of observed and computed abundances
  113     continue
 
 c        output sampled abundances and parameters if agreement is achieved
-c        for all abundances within a factor of 5
+c        for all abundances within a factor of 10
          if(ratio_max.le.10.0d0)then
 c           elemental abundances normalized to H
             write(725,6001) (xx(zexp(j)),j=1,nexp)
@@ -587,9 +538,10 @@ c           output probabilities
          endif
          
 c        ==============================================================
-c        if network does not complete or no solution is obtained
+c        if network does not complete, no solution is obtained, or 
+c        hydrogen mass fraction becomes negative:
  200     continue      
-         if(lll.eq.0)then      
+         if((lll.eq.0).or.(xh.lt.0.d0))then      
             close(707)
          endif                  
                                                     
