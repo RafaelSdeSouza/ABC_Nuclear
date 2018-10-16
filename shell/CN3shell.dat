@@ -1,0 +1,16 @@
+1   ! flag=0 for mass fractions; flag=1 for ratio X/X_H
+2.0e8,3.0e8     ! temp_min, temp_max (K)        
+1.0e4,1.0e5     ! rhop_min, rhop_max (g/cm3)   
+2.0e2,1.0e3     ! timetem_min, timetem_max (s)  
+2.0e2,1.0e3     ! timerho_min, timerho_max (s)  
+0.10e0          ! xwd_o16_min                    
+0.40e0          ! xwd_o16_max                   
+0.00e0          ! xwd_ne22_min                  
+0.02e0          ! xwd_ne22_max                   
+0.5e0,1.0e0     ! f_min, f_max                  
+Z    X [negative values: upper limits]; source: GQ Mus [Morisset & Pequignot 1996]         
+2    1.059
+6    0.0215
+7    0.336
+8    0.2554
+
