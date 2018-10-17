@@ -1,14 +1,23 @@
-1   ! flag=0 for mass fractions; flag=1 for ratio X/X_H
-2.0e8,3.0e8     ! temp_min, temp_max (K)        
-1.0e4,1.0e5     ! rhop_min, rhop_max (g/cm3)   
-2.0e2,1.0e3     ! timetem_min, timetem_max (s)  
-2.0e2,1.0e3     ! timerho_min, timerho_max (s)  
-0.10e0          ! xwd_o16_min                    
-0.40e0          ! xwd_o16_max                   
-0.00e0          ! xwd_ne22_min                  
-0.02e0          ! xwd_ne22_max                   
-0.5e0,1.0e0     ! f_min, f_max                  
-Z    X [negative values: upper limits]; source: GQ Mus [Morisset & Pequignot 1996]         
+Parameter sampling ranges
+-----------------------------------------------------------------------------------
+1.0e8,4.0e8         ! temp_min, temp_max (K)        1.0e8,4.0e8
+1.0e1,1.0e5         ! rhop_min, rhop_max (g/cm3)    1.0e1,1.0e5
+1.0e1,1.0e3         ! timetem_min, timetem_max (s)  1.0e1,1.0e3 
+1.0e1,1.0e3         ! timerho_min, timerho_max (s)  1.0e1,1.0e3
+0.60e0,0.90e0       ! xwd_c12_min;  xwd_c12_max     0.60e0,0.90e0            
+0.00e0,0.00e0       ! xwd_ne20_min; xwd_ne20_max    0.00e0,0.00e0              
+0.00e0,0.00e0       ! xwd_ne21_min; xwd_ne21_max    0.00e0,0.00e0              
+0.00e0,0.02e0       ! xwd_ne22_min; xwd_ne22_max    0.00e0,0.02e0              
+0.00e0,0.00e0       ! xwd_na23_min; xwd_na23_max    0.00e0,0.00e0
+0.00e0,0.00e0       ! xwd_mg24_min; xwd_mg24_max    0.00e0,0.00e0
+0.00e0,0.00e0       ! xwd_mg25_min; xwd_mg25_max    0.00e0,0.00e0
+0.00e0,0.00e0       ! xwd_mg26_min; xwd_mg26_max    0.00e0,0.00e0
+0.00e0,0.00e0       ! xwd_al27_min; xwd_al27_max    0.00e0,0.00e0
+0.5e0,5.0e0         ! f_min, f_max; f=0.5 [67% WD]; f=1.0 [50% WD]; f=5.0 [17% WD]                  
+-----------------------------------------------------------------------------------
+Source: GQ Mus [Morisset & Pequignot 1996]
+1    ! =0 for X(i); =1 for X(i)/X(H)
+Z    X [negative values: upper limits]          
 2    1.059
 6    0.0215
 7    0.336

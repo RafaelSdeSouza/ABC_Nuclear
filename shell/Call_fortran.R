@@ -10,7 +10,7 @@ load("CN3shell.dat")
  
  if(!is.loaded("cn3shell_Sub"))
    dyn.load("cn3shell.so") #,Local=FALSE)
- .Fortran("cn3shell_Sub")
+ .Fortran("cn3shell")
  
  
   dyn.load("cn3shell.so") 

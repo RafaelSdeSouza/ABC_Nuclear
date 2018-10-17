@@ -4,13 +4,15 @@ c*********************************************************************|
 c
 c     CLASSICAL NOVA NUCLEOSYNTHESIS
 c
-c     09/15/2018; author: Christian Iliadis
+c     10/16/2018; author: Christian Iliadis
 c
 c     shell assumes INMODE=3 [exponentially decaying profile];
 c     it samples:
 c
 c     - T_peak, rho_peak, tau_T, tau_rho
-c     - WD outer core composition
+c     - WD outer core composition [CO or ONe]; notice that the 16O
+c       abundance is not listed in the input, but is calculated in the
+c       shell as: X(16O) = 1 - X(12C) - X(20Ne) - ...
 c     - mixing between outer WD core and accreted solar matter;
 c       mixing factor defined as: 1 part WD matter, ff parts solar matter 
 c
@@ -27,8 +29,8 @@ c     EXPERIMENTAL INPUT
 c     atomic number, Z, and mass fractions of all observed elements;
 c     negative mass fractions are interpreted as upper limits; input 
 c     in CN3shell.dat;
-c     integer flag [0/1] in this file let's user input either mass
-c     fractions or mass fractions normalized to hydrogen mass fraction 
+c     integer flag in this file let's user input either mass fractions  
+c     [0] or mass fractions divided by the hydrogen mass fraction [1] 
 c
 c     OUTPUT
 c     * only if simulated and observed abundances agree for all observed
@@ -74,14 +76,19 @@ c     xexp: oberved abundance; xx: simulated abundance
       real*8 lgtemp,lgrhop,lgtimetem,lgtimerho
       real*8 temp,rhop,timetem,timerho
 
-      real*8 xwd_c12,xwd_o16,xwd_ne22
+      real*8 xwd_c12,xwd_o16,xwd_ne20,xwd_ne21,xwd_ne22,xwd_na23
+      real*8 xwd_mg24,xwd_mg25,xwd_mg26,xwd_al27
       real*8 xwd_o16_min,xwd_o16_max          
-      real*8 xwd_ne22_min,xwd_ne22_max
+      real*8 xwd_ne20_min,xwd_ne20_max,xwd_ne21_min,xwd_ne21_max
+      real*8 xwd_ne22_min,xwd_ne22_max,xwd_na23_min,xwd_na23_max
+      real*8 xwd_mg24_min,xwd_mg24_max,xwd_mg25_min,xwd_mg25_max
+      real*8 xwd_mg26_min,xwd_mg26_max,xwd_al27_min,xwd_al27_max
+      
       real*8 f_min,f_max,lgf_min,lgf_max,lgf,ff
       real*8 xwd(500),xsum1,xsum2,xsolar(500),xini
       real*8 ratio_max,ratio_new
       
-      character*100 string,string2,cdum
+      character*100 string,string2,string3,cdum
       character*1 choice
       character*28 nucleofile
       character*5 on(5000)
@@ -92,20 +99,31 @@ c     xexp: oberved abundance; xx: simulated abundance
 c=======================================================================
 c   DATA INPUT      
       open(601, file='CN3shell.dat',status='unknown')
-      read(601,'(i2)') iflag
+
+      read(601,6000) string
+      read(601,6000) string
       read(601,*) temp_min,temp_max
       read(601,*) rhop_min,rhop_max
       read(601,*) timetem_min,timetem_max
       read(601,*) timerho_min,timerho_max
-      read(601,*) xwd_o16_min
-      read(601,*) xwd_o16_max
-      read(601,*) xwd_ne22_min
-      read(601,*) xwd_ne22_max
+      read(601,*) xwd_c12_min,xwd_c12_max
+      read(601,*) xwd_ne20_min,xwd_ne20_max
+      read(601,*) xwd_ne21_min,xwd_ne21_max
+      read(601,*) xwd_ne22_min,xwd_ne22_max
+      read(601,*) xwd_na23_min,xwd_na23_max
+      read(601,*) xwd_mg24_min,xwd_mg24_max
+      read(601,*) xwd_mg25_min,xwd_mg25_max
+      read(601,*) xwd_mg26_min,xwd_mg26_max
+      read(601,*) xwd_al27_min,xwd_al27_max
       read(601,*) f_min,f_max
+      read(601,6000) string
+      read(601,6000) string3      
+c     iflag=0: input is in mass fractions; iflag=1: input is mass
+c     fractions relative to X(H)
+      read(601,'(i2)') iflag
       read(601,6000) string
       i=1                                    ! data label
 c     read isotope name and experimental mass fraction
-c     xexp(i) is now the ratio relative to hydrogen                                              
  61   read(601,*,end=60) zexp(i),xexp(i)
       i=i+1
       goto 61
@@ -142,12 +160,12 @@ c   USER CONSOLE INPUT
       read(5,*) nsamp,nseed
        
       if(nsamp.lt.1)then
-         write(6,*) 'Pick number of samples >1'
+         write(6,*) 'Pick number of samples >1. Run stop.'
          stop
       endif
          
       if(nseed.gt.0)then
-         write(6,*) 'Pick random seed <0'
+         write(6,*) 'Pick random seed <0. Run stop.'
          stop
       endif       
        
@@ -159,6 +177,7 @@ c   OUTPUT FILES
 
 c     for simulated elemental abundances [all solutions]
       open(725,file='CN3shell_a.out',status='unknown') 
+      write(725,6000) source3
       write(725,*) 'total # of samples:',nsamp
       write(725,*) '       random seed:',nseed
       write(725,*) 'sample thermonuclear rates: ',choice
@@ -166,6 +185,7 @@ c     for simulated elemental abundances [all solutions]
 
 c     for simulated profile parameters [all solutions]
       open(726,file='CN3shell_b.out',status='unknown') 
+      write(726,6000) source3
       write(726,*) 'total # of samples:',nsamp
       write(726,*) '       random seed:',nseed
       write(726,*) 'sample thermonuclear rates: ',choice
@@ -173,6 +193,7 @@ c     for simulated profile parameters [all solutions]
 
 c     for reaction rate variation factors [choice='y' only]
       open(720,file='CN3shell_c.out',status='unknown') 
+      write(720,6000) source3
       write(720,*) 'total # of samples:',nsamp
       write(720,*) '       random seed:',nseed
       write(720,*) 'sample thermonuclear rates: ',choice
@@ -218,7 +239,7 @@ c     get # of reactions and # of initial abundances
       do 75 i=1,nini
          read(704,6000) string
  75   continue
-      read(704,*) nreac     ! nreac: number of reactions
+      read(704,*) nreac             ! nreac: number of reactions
       close(704) 
 
 c=======================================================================
@@ -284,15 +305,32 @@ c        read nucleo_shell.in and construct new nucleo.in
           
          close(801)
          close(802)
+
 c        ==============================================================
-c        ==============================================================
-c        sample CO WD outer core mass fractions and construct new 
+c        sample WD outer core mass fractions and construct new 
 c        nucleo.dat
-         xwd_o16=xwd_o16_min+(xwd_o16_max-xwd_o16_min)
+         xwd_c12=xwd_c12_min+(xwd_c12_max-xwd_c12_min)
+     &                *ran1(nseed)
+         xwd_ne20=xwd_ne20_min+(xwd_ne20_max-xwd_ne20_min)
+     &                *ran1(nseed)
+         xwd_ne21=xwd_ne21_min+(xwd_ne21_max-xwd_ne21_min)
      &                *ran1(nseed)
          xwd_ne22=xwd_ne22_min+(xwd_ne22_max-xwd_ne22_min)
      &                *ran1(nseed)
-         xwd_c12=1.d0-xwd_o16-xwd_ne22
+         xwd_na23=xwd_na23_min+(xwd_na23_max-xwd_na23_min)
+     &                *ran1(nseed)
+         xwd_mg24=xwd_mg24_min+(xwd_mg24_max-xwd_mg24_min)
+     &                *ran1(nseed)
+         xwd_mg25=xwd_mg25_min+(xwd_mg25_max-xwd_mg25_min)
+     &                *ran1(nseed)
+         xwd_mg26=xwd_mg26_min+(xwd_mg26_max-xwd_mg26_min)
+     &                *ran1(nseed)
+         xwd_al27=xwd_al27_min+(xwd_al27_max-xwd_al27_min)
+     &                *ran1(nseed)
+
+c        oxygen abundance given by 1 minus the other abundances
+         xwd_o16=1.d0-xwd_c12-xwd_ne20-xwd_ne21-xwd_ne22-xwd_na23
+     &               -xwd_mg24-xwd_mg25-xwd_mg26-xwd_al27
 
          call SYSTEM('cp nucleo.dat nucleo_shell.dat')
 
@@ -304,7 +342,7 @@ c        following index values apply to INITIAL abundances;
 c        they do not label the isotope number
 c        !!!!!!!!!!!
                    
-c        abundances of CO white dwarf
+c        abundances of white dwarf
 c        ...first, set everything to zero                
          do 141 jj=1,nini
             xwd(jj)=0.0d0
@@ -312,10 +350,17 @@ c        ...first, set everything to zero
 c        ...then input WD abundances
          xwd(9)=xwd_c12      ! 12C
          xwd(13)=xwd_o16     ! 16O
+         xwd(17)=xwd_ne20    ! 20Ne
+         xwd(18)=xwd_ne21    ! 21Ne
          xwd(19)=xwd_ne22    ! 22Ne
+         xwd(21)=xwd_na23    ! 23Na
+         xwd(22)=xwd_mg24    ! 24Mg
+         xwd(23)=xwd_mg25    ! 25Mg
+         xwd(24)=xwd_mg26    ! 26Mg
+         xwd(26)=xwd_al27    ! 27Al
 
-c        ...draw random mixing fraction [1 part WD with ff parts solar]:
-c        X_mix = (X_WD + ff*X_solar)/(1+ff)
+c        ...draw random mixing fraction [1 part WD with ff parts solar];
+c        defined as: X_mix = (X_WD + ff*X_solar)/(1+ff)
 
          lgf=lgf_min+(lgf_max-lgf_min)*ran1(nseed)
          ff=10.d0**lgf
@@ -366,7 +411,6 @@ c        output on screen
          close(223)
          close(224)
                        
-c        ==============================================================
 c        ==============================================================
 c        randomize rates (choice.eq.'y')
          if(choice.eq.'y')then
@@ -477,6 +521,7 @@ c        Ti = stable Ti + 44Ti + 47Sc + 48Sc + 47V
 c        V = 50V + 51V + 48V + 49V + 48Cr + 49Cr
          xx(23)=x_v+xf(195)+xf(198)+xf(191)+xf(196)         
          xx(24)=x_cr+xf(206)    ! Cr = stable Cr + 51Cr
+         
 c        ==============================================================
 c        if iflag=1: 
 c        divide all computed elemental abundances by hydrogen abundance
@@ -487,6 +532,7 @@ c        divide all computed elemental abundances by hydrogen abundance
 c               write(6,*) xx(jj)
  111        continue
          endif
+         
 c        ==============================================================
 c        determine maximum ratio of observed and computed abundances
          ratio_max=1.0d0
@@ -588,10 +634,11 @@ c   FORMATS
  9999 format(9(1x,a5,'=',1pe10.2e3))  
 
       end
-C     ====================================================================
-C     ====================================================================
+
+c*********************************************************************|
+c*********************************************************************|
       FUNCTION gasdev(idum)
-C     ====================================================================
+c*********************************************************************|
       integer idum
       real*8 gasdev
 C     uses ran1
@@ -617,9 +664,9 @@ C         variance, using ran1(idum) as the source of uniform deviates
       endif
       Return
       end
-C     ====================================================================
+c*********************************************************************|
       FUNCTION ran1(idum)
-C     ====================================================================
+c*********************************************************************|
       integer idum,ia,im,iq,ir,ntab,ndiv
       real*8 ran1,am,eps,rnmx
       parameter (ia=16807,im=2147483647,am=1.d0/im,iq=127773,ir=2836,
