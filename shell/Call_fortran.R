@@ -1,31 +1,17 @@
 # Fortran 
-load("CN3shell.dat")
-     
 
-  dyn.load("cn3shell.so")
+# gfortran -shared -m64 -o cn3shell.so cn3shell.f
 
- .Fortran("cn3shell")
-
-
- 
- if(!is.loaded("cn3shell_Sub"))
+# Load the fortran code 
+if(!is.loaded("cn3shellSub"))
    dyn.load("cn3shell.so") #,Local=FALSE)
- .Fortran("cn3shell")
+   .Fortran("cn3shell.so")
+
+
+ # Load the fortran code needed to analyse the final abundance data
+ if(!is.loaded("finalAbundSub"))
+   dyn.load("a_finalAbund.so") #,Local=FALSE)
+ .Fortran("finalAbundSub")
  
  
-  dyn.load("cn3shell.so") 
-  .Fortran("cn3shell",10,-1)
-
-  myfacto <- function() {
-    dyn.load("cn3shell.so")
-    retvals <- .Fortran("cn3shell")
-    return(retvals)
-  }
-  
-  
-  
-dyn.load("nuclear.so")
-.Fortran("nuclear")
-
-
-is.loaded("cn3shell_")
+ system("./cn3shell.so")

@@ -156,21 +156,31 @@ c     for sampling, a log scale is of advantage
 
 c=======================================================================
 c   USER CONSOLE INPUT
-      write(6,*) 'Enter number of network samples and seed:'
-      read(5,*) nsamp,nseed
+c      write(6,*) 'Enter number of network samples and seed:'
+c      read(5,*) nsamp,nseed
        
-      if(nsamp.lt.1)then
-         write(6,*) 'Pick number of samples >1. Run stop.'
-         stop
-      endif
+c     if(nsamp.lt.1)then
+c         write(6,*) 'Pick number of samples >1. Run stop.'
+c         stop
+c      endif
          
-      if(nseed.gt.0)then
-         write(6,*) 'Pick random seed <0. Run stop.'
-         stop
-      endif       
+c      if(nseed.gt.0)then
+c         write(6,*) 'Pick random seed <0. Run stop.'
+c        stop
+c      endif       
        
-      write(6,*) 'Random reaction rates? (y,n)'
-      read(5,*) choice
+c      write(6,*) 'Random reaction rates? (y,n)'
+c      read(5,*) choice
+
+
+       nsamp = 5
+       nseed  = -5
+       choice = "y"
+
+
+
+
+
 
 c=======================================================================
 c   OUTPUT FILES
