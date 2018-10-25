@@ -156,38 +156,28 @@ c     for sampling, a log scale is of advantage
 
 c=======================================================================
 c   USER CONSOLE INPUT
-c      write(6,*) 'Enter number of network samples and seed:'
-c      read(5,*) nsamp,nseed
+      write(6,*) 'Enter number of network samples and seed:'
+      read(5,*) nsamp,nseed
        
-c     if(nsamp.lt.1)then
-c         write(6,*) 'Pick number of samples >1. Run stop.'
-c         stop
-c      endif
+      if(nsamp.lt.1)then
+         write(6,*) 'Pick number of samples >1. Run stop.'
+         stop
+      endif
          
-c      if(nseed.gt.0)then
-c         write(6,*) 'Pick random seed <0. Run stop.'
-c        stop
-c      endif       
+      if(nseed.gt.0)then
+         write(6,*) 'Pick random seed <0. Run stop.'
+         stop
+      endif       
        
-c      write(6,*) 'Random reaction rates? (y,n)'
-c      read(5,*) choice
-
-
-       nsamp = 5
-       nseed  = -5
-       choice = "y"
-
-
-
-
-
+      write(6,*) 'Random reaction rates? (y,n)'
+      read(5,*) choice
 
 c=======================================================================
 c   OUTPUT FILES
 
 c     for simulated elemental abundances [all solutions]
       open(725,file='CN3shell_a.out',status='unknown') 
-      write(725,6000) source3
+      write(725,6000) string3
       write(725,*) 'total # of samples:',nsamp
       write(725,*) '       random seed:',nseed
       write(725,*) 'sample thermonuclear rates: ',choice
@@ -195,7 +185,7 @@ c     for simulated elemental abundances [all solutions]
 
 c     for simulated profile parameters [all solutions]
       open(726,file='CN3shell_b.out',status='unknown') 
-      write(726,6000) source3
+      write(726,6000) string3
       write(726,*) 'total # of samples:',nsamp
       write(726,*) '       random seed:',nseed
       write(726,*) 'sample thermonuclear rates: ',choice
@@ -203,7 +193,7 @@ c     for simulated profile parameters [all solutions]
 
 c     for reaction rate variation factors [choice='y' only]
       open(720,file='CN3shell_c.out',status='unknown') 
-      write(720,6000) source3
+      write(720,6000) string3
       write(720,*) 'total # of samples:',nsamp
       write(720,*) '       random seed:',nseed
       write(720,*) 'sample thermonuclear rates: ',choice
@@ -566,14 +556,15 @@ c        determine maximum ratio of observed and computed abundances
 c        output sampled abundances and parameters if agreement is achieved
 c        for all abundances within a factor of 10
          if(ratio_max.le.10.0d0)then
-c           elemental abundances normalized to H
+c           elemental abundances 
             write(725,6001) (xx(zexp(j)),j=1,nexp)
 
 c           profile parameters
             write(726,1103) temp,rhop,pro3,timetem,timerho,
      &                   xwd_c12,xwd_o16,ff,ratio_max
          endif
-              
+
+c        ==============================================================              
 c        output sampled reaction rate variation factors if choice='y' 
 c        and all solutions are within user-defined factor, uf    
          if((ratio_max.le.uf).and.(choice.eq.'y'))then

@@ -14,4 +14,4 @@ if(!is.loaded("cn3shellSub"))
  .Fortran("finalAbundSub")
  
  
- system("./cn3shell.so")
+system("cn3shell.so")
