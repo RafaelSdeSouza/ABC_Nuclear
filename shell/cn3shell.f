@@ -169,6 +169,8 @@ c   USER CONSOLE INPUT
          stop
       endif       
        
+       
+c     always no       
       write(6,*) 'Random reaction rates? (y,n)'
       read(5,*) choice
 
