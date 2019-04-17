@@ -39,17 +39,17 @@ obs_data <- toy_model(c(x1,x2,x3,x4))
 # Summary, just the data - no compression
 sum_stat_obs <- obs_data
 
-toy_prior <- list(c("unif",1e-1,500),c("unif",1e-1,500),
-                  c("unif",1e-1,500),c("unif",1e-1,500))
+toy_prior <- list(c("unif",1e-1,1e3),c("unif",1e-1,1e3),
+                  c("unif",1e-1,1e3),c("unif",1e-1,1e3))
 
 
 # Fraction of acceptable data, measured via Euclidian distance between simulation and obs_data
-tolerance=c(1,0.75,0.5,0.25,0.1)
+tolerance=c(1,0.75,0.5,0.25,0.15)
 
 # Run Sequencial Approximate Bayesian Computation
 ABC_Beaumont <- ABC_sequential(method="Beaumont", model=toy_model,
                              prior=toy_prior, nb_simul=1e4, summary_stat_target=sum_stat_obs,
-                             tolerance_tab=tolerance,n_cluster=4,use_seed=TRUE)
+                             tolerance_tab=tolerance)
 
 # Plot histogram
 hist(ABC_Beaumont$param[,1])
