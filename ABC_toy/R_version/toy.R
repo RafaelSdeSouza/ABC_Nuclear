@@ -24,11 +24,19 @@ toy_model <- function(par){
           5e-4*par[2]^3 +
           8e-4*par[3]^2 +
           8e-4*par[4]
-#S1 <- mean(c(val1,val2,val3,val4)) 
-#S2 <- sd(c(val1,val2,val3,val4))
-  return(c(log(val1),log(val2),log(val3),log(val4)))
+  val5 <- 9e-5*par[1]^4 +
+          6e-5*par[2]^3 +
+          3e-5*par[3]^2 +
+          1e-5*par[4]
+  
+
+return(c(val1,val2,val3,val4,val5))
+
 }
 
+
+
+toy_model <- cmpfun(toy_model)
 # Observed data
 x1 = 34
 x2 = 12
@@ -39,12 +47,28 @@ obs_data <- toy_model(c(x1,x2,x3,x4))
 # Summary, just the data - no compression
 sum_stat_obs <- obs_data
 
-toy_prior <- list(c("unif",1e-1,1e3),c("unif",1e-1,1e3),
-                  c("unif",1e-1,1e3),c("unif",1e-1,1e3))
+toy_prior <- list(c("lognormal",log(2.5),log(2.5)),c("lognormal",log(2.5),log(2.5)),
+                  c("lognormal",log(2.5),log(2.5)),c("lognormal",log(2.5),log(2.5)))
 
 
 # Fraction of acceptable data, measured via Euclidian distance between simulation and obs_data
 tolerance=c(1,0.75,0.5,0.25,0.15)
+
+
+
+
+n=1e5
+tol = 0.1
+ABC_sim<-ABC_rejection(model=toy_model, prior=toy_prior, nb_simul=n, summary_stat_target=sum_stat_obs,tol=tol,
+use_seed=TRUE)
+
+hist(ABC_sim$param[,4])
+
+pdat <- as.data.frame(ABC_sim$param)
+
+ggplot(data = pdat,aes(x = V1,y = V3)) +
+  geom_point()
+
 
 # Run Sequencial Approximate Bayesian Computation
 ABC_Beaumont <- ABC_sequential(method="Beaumont", model=toy_model,
