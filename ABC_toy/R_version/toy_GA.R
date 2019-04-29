@@ -46,20 +46,25 @@ obs_data <- toy_model(c(x1,x2,x3,x4))
 # Summary, just the data - no compression
 sum_stat_obs <- obs_data
 
-euc.dist <- function(x1, x2) sqrt(sum((log(x1) - log(x2))^2))
-mah.dist <- function(x1,x2){
-x <- cbind(x1,x2)
-mean <- colMeans(x)
-Sx <- cov(x)
-sqrt(sum(mahalanobis(x,mean,Sx)^2))
-}
+euc.dist <- function(x1, x2) sqrt(sum((x1 - x2)^2))
+H.dist <- function(x1, x2) sqrt(sum((sqrt(x1) - sqrt(x2))^2))
 
-loss <- function(xx,yy,zz,kk){mah.dist(toy_model(c(xx,yy,zz,kk)),obs_data)}
+R.dist <- function(x1, x2) sqrt(sum((log(x1) - log(x2))^2))
+
+
+loss <- function(xx,yy,zz,kk){R.dist(toy_model(c(xx,yy,zz,kk)),obs_data)}
 
 GA <- ga(type = "real-valued", fitness =  function(x) -loss(x[1],x[2],x[3],x[4]),
          lower = c(0.001, 0.001,0.001,0.001), upper = c(1e3, 1e3,1e3,1e3),
-         popSize = 1000, maxiter = 5000)
+         popSize = 10000, maxiter = 7500, optim = TRUE)
 
 
 summary(GA)
 plot(GA)
+
+f <- function(x){
+  loss(x1,x2,x3,x)
+  }
+
+xx <- seq(1e-5,1e3,length.out = 1000)
+plot(xx,sapply(xx,f),log="y")
