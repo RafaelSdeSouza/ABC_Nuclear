@@ -1,3 +1,39 @@
+      program toy_model
+c======================================================================
+c     Sample driver program for pikaia.f
+c======================================================================
+      implicit none
+      integer n, seed, i, status
+      parameter (n=2)
+      real ctrl(12), x(n), f, twod
+      external twod
+c
+c        (twod is an example fitness function, a smooth 2-d landscape)
+c
+c     First, initialize the random-number generator
+c
+      seed=654321
+      call rninit(seed)
+c
+c     Set control variables (use defaults)
+      do 10 i=1,12
+         ctrl(i) = -1
+   10 continue
+      ctrl(2)=50
+
+c     Now call pikaia
+      call pikaia(twod,n,ctrl,x,f,status)
+c
+c     Print the results
+      write(*,*) ' status: ',status
+      write(*,*) '      x: ',x
+      write(*,*) '      f: ',f
+      write(*,20) ctrl
+ 20   format(   '    ctrl: ',6f9.5/10x,6f9.5)
+c
+      goto 1
+      end
+c*********************************************************************
       function twod(n,x)
 c=====================================================================
 c     Compute sample fitness function (2-d landscape)
