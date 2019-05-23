@@ -32,7 +32,6 @@ toy_model <- function(par){
 
 return(c(val1,val2,val3,val4,val5))
 
-  inv.logit(34)
 }
 
 
