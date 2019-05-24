@@ -1,6 +1,6 @@
 c======================================================================
 c     ===================================================             |
-      subroutine toy(n,x,y)
+      subroutine toy(n,par,y)
 c
 c     this taked the place of nucleo.f. It reads parameters from an
 c     input file and outputs simulated values from these parameters   
@@ -23,32 +23,32 @@ c
 c======================================================================
 c   VARIABLES
       integer n
-      real*8 x(n)
+      real*8 par(n)
       real*8 y(5)
       
 c   COMPUTE PREDICTED VALUES: BLACK BOX
 c======================================================================
 c     the numbers in the following equations are "hidden"
-      y(1)=1.d-1*x(1)**4.0d0+
-     &     2.d-1*x(2)**3.0d0+
-     &     7.d-1*x(3)**2.0d0+
-     &     4.d-1*x(4)
-      y(2)=3.d-2*x(1)**4.0d0+
-     &     5.d-2*x(2)**3.0d0+
-     &     9.d-2*x(3)**2.0d0+
-     &     1.d-2*x(4)
-      y(3)=7.d-3*x(1)**4.0d0+
-     &     1.d-3*x(2)**3.0d0+
-     &     4.d-3*x(3)**2.0d0+
-     &     2.d-3*x(4)
-      y(4)=2.d-4*x(1)**4.0d0+
-     &     5.d-4*x(2)**3.0d0+
-     &     8.d-4*x(3)**2.0d0+
-     &     8.d-4*x(4)
-      y(5)=9.d-5*x(1)**4.0d0+
-     &     6.d-5*x(2)**3.0d0+
-     &     3.d-5*x(3)**2.0d0+
-     &     1.d-5*x(4)
+      y(1)=1.d-1*par(1)**4.0d0+
+     &     2.d-1*par(2)**3.0d0+
+     &     7.d-1*par(3)**2.0d0+
+     &     4.d-1*par(4)
+      y(2)=3.d-2*par(1)**4.0d0+
+     &     5.d-2*par(2)**3.0d0+
+     &     9.d-2*par(3)**2.0d0+
+     &     1.d-2*par(4)
+      y(3)=7.d-3*par(1)**4.0d0+
+     &     1.d-3*par(2)**3.0d0+
+     &     4.d-3*par(3)**2.0d0+
+     &     2.d-3*par(4)
+      y(4)=2.d-4*par(1)**4.0d0+
+     &     5.d-4*par(2)**3.0d0+
+     &     8.d-4*par(3)**2.0d0+
+     &     8.d-4*par(4)
+      y(5)=9.d-5*par(1)**4.0d0+
+     &     6.d-5*par(2)**3.0d0+
+     &     3.d-5*par(3)**2.0d0+
+     &     1.d-5*par(4)
       
 	  return
       end

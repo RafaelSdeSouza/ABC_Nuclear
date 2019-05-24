@@ -1,33 +1,49 @@
 c     External dependencies      
-	  include "toy.f"
 	  include "loss.f"
+	  include "pikaia.f"	  
 c==================================================================		  
 	  program main
 c==================================================================
       implicit  none
-      integer    n,M
-	real*8     x(4)
-	real*8     y(5), loss
-	external loss
+      integer    n, seed, i, status
+	  parameter (n=4)
+	  real*8      ctrl(12), x(n), f, loss, fit(n)
+      external loss
 
-	  x(1) = 34
-	  x(2) = 12
-	  x(3) = 500
-	  x(4) = 7
+c
+c     First, initialize the random-number generator
+c
+      seed = 123456
+      call rninit(seed)
+c
+c     Set control variables (evolve 50 individuals over 100
+c     generations, use defaults values for other input parameters)
+c
+      do 10 i=1,12
+         ctrl(i) = -1
+   10 continue
+      ctrl(1)=50
+      ctrl(2)=100
 
-
-c     Now call toy
-	  call toy(n,x,y)
 
 c     Now call pikaia
       call pikaia(loss,n,ctrl,x,f,status)
 
 c      
+	  
+c     Scale results back to original scale
+	  fit(1) = x(1)*1000.
+	  fit(2) = x(2)*1000.
+	  fit(3) = x(3)*1000
+	  fit(4) = x(4)*1000.
+	  
 
 c     Print the results
-	write(*,*) '      out: ',y
-	write(*,*) '      loss: ',loss(y)
-c
-      end
+      write(*,*) ' status: ',status
+      write(*,*) '      fit: ',fit
+      write(*,*) '      f: ',f
+      write(*,20) ctrl
+ 20   format(   '    ctrl: ',6f11.6/10x,6f11.6)
 c***************************************************************
 
+      end

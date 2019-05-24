@@ -1,67 +1,3 @@
-      program xpkaia
-c======================================================================
-c     Sample driver program for pikaia.f
-c======================================================================
-      implicit none
-      integer n, seed, i, status
-      parameter (n=2)
-      real ctrl(12), x(n), f, twod
-      external twod
-c
-c        (twod is an example fitness function, a smooth 2-d landscape)
-c
-c     First, initialize the random-number generator
-c
-    1 write(*,'(/A$)') ' Random number seed (I*4)? '
-      read(*,*) seed
-      call rninit(seed)
-c
-c     Set control variables (use defaults)
-      do 10 i=1,12
-         ctrl(i) = -1
-   10 continue
-      ctrl(2)=50
-
-c     Now call pikaia
-      call pikaia(twod,n,ctrl,x,f,status)
-c
-c     Print the results
-      write(*,*) ' status: ',status
-      write(*,*) '      x: ',x
-      write(*,*) '      f: ',f
-      write(*,20) ctrl
- 20   format(   '    ctrl: ',6f9.5/10x,6f9.5)
-c
-      goto 1
-      end
-c*********************************************************************
-      function twod(n,x)
-c=====================================================================
-c     Compute sample fitness function (2-d landscape)
-c=====================================================================
-      implicit none
-c
-c     Input:
-      integer n
-      real x(n)
-c
-c     Output
-      real twod
-c
-c     Constant
-      real pi,sigma2
-      integer nn
-      parameter (pi=3.1415926536,sigma2=0.15,nn=9)
-c
-c     Local
-      real rr
-
-      if (x(1).gt.1..or.x(2).gt.1.) stop
-      rr=sqrt( (0.5-x(1))**2+ (0.5-x(2))**2)
-      twod=cos(rr*nn*pi)**2 *exp(-rr**2/sigma2)
-
-      return
-      end
 c*********************************************************************
       function urand()
 c=====================================================================
@@ -77,11 +13,11 @@ c
 c     Input - none
 c
 c     Output
-      real     urand
+      real*8     urand
 c
 c     Local
       integer  iseed
-      real     ran0
+      real*8     ran0
       external ran0
 c
 c     Common block to make iseed visible to rninit (and to save
@@ -138,12 +74,12 @@ c     Input/Output:
       integer seed
 c
 c     Output:
-      real ran0
+      real*8 ran0
 c
 c     Constants:
       integer A,M,Q,R
       parameter (A=48271,M=2147483647,Q=44488,R=3399)
-      real SCALE,EPS,RNMX
+      real*8 SCALE,EPS,RNMX
       parameter (SCALE=1./M,EPS=1.2e-7,RNMX=1.-EPS)
 c
 c     Local:
@@ -172,7 +108,7 @@ c======================================================================
 
 c     Input:
       integer   n
-      real      a(n)
+      real*8      a(n)
 
 c     Output:
       integer   p(n)
@@ -184,7 +120,7 @@ c        (LGN = log base 2 of maximum n;
 c         Q = smallest subfile to use quicksort on)
 
 c     Local:
-      real      x
+      real*8      x
       integer   stackl(LGN),stackr(LGN),s,t,l,m,r,i,j
 
 c     Initialize the stack
@@ -329,7 +265,7 @@ c           cross, mutate, genrep, stdrep, newpop, adjmut
  
 c     Input:
       integer   n
-      real      ff
+      real*8      ff
       external  ff
 c
 c      o Integer  n  is the parameter space dimension, i.e., the number
@@ -357,7 +293,7 @@ c        are provided in the accompanying file, xpkaia.f.
 c
 c
 c      Input/Output:
-       real ctrl(12)
+       real*8 ctrl(12)
 c
 c      o Array  ctrl  is an array of control flags and parameters, to
 c        control the genetic behavior of the algorithm, and also printed
@@ -412,7 +348,7 @@ c                      (default is 0)
 c
 c
 c     Output:
-      real      x(n), f
+      real*8      x(n), f
       integer   status
 c
 c      o Array  x(1:n)  is the "fittest" (optimal) solution found,
@@ -440,16 +376,16 @@ c
 c     Local variables
       integer        np, nd, ngen, imut, irep, ielite, ivrb, k, ip, ig,
      +               ip1, ip2, new, newtot
-      real           pcross, pmut, pmutmn, pmutmx, fdif
+      real*8           pcross, pmut, pmutmn, pmutmx, fdif
 c
-      real           ph(NMAX,2), oldph(NMAX,PMAX), newph(NMAX,PMAX)
+      real*8           ph(NMAX,2), oldph(NMAX,PMAX), newph(NMAX,PMAX)
 c
       integer        gn1(NMAX*DMAX), gn2(NMAX*DMAX)
       integer        ifit(PMAX), jfit(PMAX)
-      real           fitns(PMAX)
+      real*8           fitns(PMAX)
 c
 c     User-supplied uniform random number generator
-      real           urand
+      real*8           urand
       external       urand
 c
 c     Function urand should not take any arguments.  If the user wishes
@@ -564,15 +500,15 @@ c     Input
       integer  n
 c
 c     Input/Output
-      real     ctrl(12)
+      real*8     ctrl(12)
 c
 c     Output
       integer  np, ngen, nd, imut, irep, ielite, ivrb, status
-      real     pcross, pmutmn, pmutmx, pmut, fdif
+      real*8     pcross, pmutmn, pmutmx, pmut, fdif
 c
 c     Local
       integer  i
-      real     DFAULT(12)
+      real*8     DFAULT(12)
       save     DFAULT
       data     DFAULT /100,500,5,.85,2,.005,.0005,.25,1,1,1,0/
 c
@@ -694,12 +630,12 @@ c
  
 c     Input:
       integer np,ifit(np),ivrb,ndim,n,nd,ig,nnew
-      real oldph(ndim,np),fitns(np),pmut
+      real*8 oldph(ndim,np),fitns(np),pmut
 c
 c     Output: none
 c
 c     Local
-      real bestft,pmutpv
+      real*8 bestft,pmutpv
       save bestft,pmutpv
       integer ndpwr,k
       logical rpt
@@ -764,14 +700,14 @@ c
 c
 c     Inputs:
       integer   n, nd
-      real      ph(n)
+      real*8      ph(n)
 c
 c     Output:
       integer   gn(n*nd)
 c
 c     Local:
       integer   ip, i, j, ii
-      real      z
+      real*8      z
 c
       z=10.**nd
       ii=0
@@ -800,11 +736,11 @@ c     Inputs:
       integer   n, nd, gn(n*nd)
 c
 c     Output:
-      real      ph(n)
+      real*8      ph(n)
 c
 c     Local:
       integer   ip, i, j, ii
-      real      z
+      real*8      z
 c
       z=10.**(-nd)
       ii=0
@@ -836,7 +772,7 @@ c
 c
 c     Inputs:
       integer        n, nd
-      real           pcross
+      real*8           pcross
 c
 c     Input/Output:
       integer        gn1(n*nd), gn2(n*nd)
@@ -845,7 +781,7 @@ c     Local:
       integer        i, ispl, ispl2, itmp, t
 c
 c     Function
-      real           urand
+      real*8           urand
       external       urand
  
  
@@ -898,7 +834,7 @@ c
 c
 c     Input:
       integer        n, nd, imut
-      real           pmut
+      real*8           pmut
 c
 c     Input/Output:
       integer        gn(n*nd)
@@ -908,7 +844,7 @@ c     Local:
 
 c
 c     Function:
-      real           urand
+      real*8           urand
       external       urand
 c
 c     Decide which type of mutation is to occur
@@ -996,14 +932,14 @@ c
 c
 c     Input:
       integer        n, ndim, np, ifit(np), imut
-      real           oldph(ndim,np), fitns(np), pmutmn, pmutmx
+      real*8           oldph(ndim,np), fitns(np), pmutmn, pmutmx
 c
 c     Input/Output:
-      real           pmut
+      real*8           pmut
 c
 c     Local:
       integer        i
-      real           rdif, rdiflo, rdifhi, delta
+      real*8           rdif, rdiflo, rdifhi, delta
       parameter      (rdiflo=0.05, rdifhi=0.25, delta=1.5)
 
       if(imut.eq.2.or.imut.eq.5)then
@@ -1064,17 +1000,17 @@ c     USES: urand
 c
 c     Input:
       integer        np, jfit(np)
-      real           fdif
+      real*8           fdif
 c
 c     Output:
       integer        idad
 c
 c     Local:
       integer        np1, i
-      real           dice, rtfit
+      real*8           dice, rtfit
 c
 c     Function:
-      real           urand
+      real*8           urand
       external       urand
 c
 c
@@ -1104,7 +1040,7 @@ c     USES: rqsort
 c
 c     Input
       integer    n
-      real       arrin(n)
+      real*8       arrin(n)
 c
 c     Output
       integer    indx(n),rank(n)
@@ -1137,10 +1073,10 @@ c
  
 c     Input:
       integer        ndim, n, np, ip
-      real           ph(ndim,2)
+      real*8           ph(ndim,2)
 c
 c     Output:
-      real           newph(ndim,np)
+      real*8           newph(ndim,np)
 c
 c     Local:
       integer        i1, i2, k
@@ -1170,11 +1106,11 @@ c     USES: ff, urand
 c
 c     Input:
       integer        ndim, n, np, irep, ielite
-      real           ff, ph(ndim,2)
+      real*8           ff, ph(ndim,2)
       external       ff
 c
 c     Input/Output:
-      real           oldph(ndim,np), fitns(np)
+      real*8           oldph(ndim,np), fitns(np)
       integer        ifit(np), jfit(np)
 c
 c     Output:
@@ -1182,10 +1118,10 @@ c     Output:
  
 c     Local:
       integer        i, j, k, i1, if1
-      real           fit
+      real*8           fit
 c
 c     External function
-      real           urand
+      real*8           urand
       external       urand
 c
 c
@@ -1265,15 +1201,15 @@ c     USES: ff, rnkpop
 c
 c     Input:
       integer        ndim, np, n, ielite
-      real           ff
+      real*8           ff
       external       ff
 c
 c     Input/Output:
-      real           oldph(ndim,np), newph(ndim,np)
+      real*8           oldph(ndim,np), newph(ndim,np)
 c
 c     Output:
       integer        ifit(np), jfit(np), nnew
-      real           fitns(np)
+      real*8           fitns(np)
 c
 c     Local:
       integer        i, k
