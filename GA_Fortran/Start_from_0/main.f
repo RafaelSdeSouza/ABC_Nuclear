@@ -22,9 +22,10 @@ c
       do 10 i=1,12
          ctrl(i) = -1
    10 continue
-      ctrl(1)=50
-      ctrl(2)=100
-
+      ctrl(1)=128
+      ctrl(2)= 50000
+c	  ctrl(9)= 0.0
+c	  ctrl(10)= 3
 
 c     Now call pikaia
       call pikaia(loss,n,ctrl,x,f,status)

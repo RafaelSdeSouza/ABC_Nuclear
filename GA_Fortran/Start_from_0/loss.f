@@ -30,10 +30,10 @@ c---------- 2. compute loss
       sum = 0.
       do 1 i = 1,5
 
-         sum = sum + (log(y(i))-log(obs(i)))**2
+         sum = sum + ((y(i))-(obs(i)))**2
     1 continue
 c---------- 3. define fitness
-      loss = -sqrt(sum)
+      loss = 1/sqrt(sum)
 
       return
       end
