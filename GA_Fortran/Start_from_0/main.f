@@ -13,7 +13,7 @@ c==================================================================
 c
 c     First, initialize the random-number generator
 c
-      seed = 123456
+      seed = 42
       call rninit(seed)
 c
 c     Set control variables (evolve 50 individuals over 100
@@ -22,8 +22,8 @@ c
       do 10 i=1,12
          ctrl(i) = -1
    10 continue
-      ctrl(1)=128
-      ctrl(2)= 50000
+      ctrl(1)=512
+      ctrl(2)= 5000
 c	  ctrl(9)= 0.0
 c	  ctrl(10)= 3
 
