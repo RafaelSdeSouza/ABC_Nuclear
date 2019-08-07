@@ -22,7 +22,7 @@ c
       do 10 i=1,12
          ctrl(i) = -1
    10 continue
-      ctrl(1)=512
+      ctrl(1)=128
       ctrl(2)= 5000
 c	  ctrl(9)= 0.0
 c	  ctrl(10)= 3
@@ -37,7 +37,7 @@ c     Scale results back to original scale
 	  fit(2) = x(2)*1000.
 	  fit(3) = x(3)*1000
 	  fit(4) = x(4)*1000.
-	  
+
 
 c     Print the results
       write(*,*) ' status: ',status
