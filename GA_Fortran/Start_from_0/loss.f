@@ -7,7 +7,7 @@ c     Loss function for toy model
 c==========================================================
       implicit none
       integer      n,i
-      real*8       x(n),sum,obs(n),loss, par(n), y(5), ll
+      real*8       x(n),sum,obs(n),loss, par(n), y(5), ll, sigma
 
 	  obs(1) =  279565.6000
 	  obs(2) = 58891.5000
@@ -20,19 +20,17 @@ c---------- 1. rescale input variables:
 	  par(3)=x(3)*1000.
 	  par(4)=x(4)*1000.
 
-
-
 c----------     Now call toy
 	  call toy(n,par,y)
 	  
 	  			
-c---------- 2. compute loss
+c---------- 3. compute loss
       sum = 0.
       do 1 i = 1,5
 
-         sum = sum + (log(y(i))-log(obs(i)))**2
+         sum = sum + ((y(i)-obs(i)))**2
     1 continue
-c---------- 3. define fitness
+c---------- 4. define fitness
       ll = sqrt(sum)
       loss = 1/ll
 

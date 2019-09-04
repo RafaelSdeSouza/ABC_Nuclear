@@ -56,15 +56,15 @@ loss <- function(xx,yy,zz,kk){R.dist(toy_model(c(xx,yy,zz,kk)),obs_data)}
 
 GA <- ga(type = "real-valued", fitness =  function(x) -loss(x[1],x[2],x[3],x[4]),
          lower = c(0.001, 0.001,0.001,0.001), upper = c(1e3, 1e3,1e3,1e3),
-         popSize = 10000, maxiter = 7500, optim = TRUE)
+         popSize = 10000, maxiter = 2000, optim = TRUE)
 
 
 summary(GA)
 plot(GA)
 
-f <- function(x){
-  loss(x1,x2,x3,x)
-  }
+#f <- function(x){
+#  loss(x1,x2,x3,x)
+#  }
 
-xx <- seq(1e-5,1e3,length.out = 1000)
-plot(xx,sapply(xx,f),log="y")
+#xx <- seq(1e-5,1e3,length.out = 1000)
+#plot(xx,sapply(xx,f),log="y")
