@@ -1,0 +1,36 @@
+323456        ! random number seed
+==========================================================================
+100           ! number of individuals                        [default=100]
+1000          ! number of generations                        [default=500]
+9             ! number of significant digits                 [default=6]
+0.85          ! crossover probability; must be  <= 1.0       [default=0.85]
+2             ! [3] mutation mode; 1/2/3/4/5                 [default=2]                      
+0.005         ! initial mutation rate; should be small       [default=0.005] 
+0.0005        ! minimum mutation rate; must be >= 0.0        [default=0.0005]
+0.25          ! maximum mutation rate; must be <= 1.0        [default=0.25]
+1             ! relative fitness differential; range [0...1] [default=1]
+3             ! [2] reproduction plan                        [default=3]
+0             ! elitism; 0/1=off/on for rep. plans 1 and 2   [default=0]
+2             ! printed output 0/1/2=None/Minimal/Full       [default=0]
+==========================================================================
+Parameter range [do not use 0 for both search boundaries!]    defaults:
+1.5e8, 3.0e8        ! T_peak (K)                             1.5e8, 3.0e8
+10., 5000.          ! rho_peak (g/cm3)                       5., 5000.
+100., 1000.         ! tau_T (s)  [0, 0 for adiab. exp.]      100., 500.
+10., 100.           ! tau_rho (s)                            10., 100.    
+0.45, 0.90          ! xwd_c12                                0.45, 0.90           
+0.0,  0.02          ! xwd_ne22                               0.0,  0.02             
+0.5, 10.            ! f: 1 part WD with f parts solar        0.5, 10.
+==========================================================================
+Source: tests....
+1    ! iflag =0: analysis of X(i); =Z: analysis of X(i)/X(Z)
+INPUT IS ALWAYS MASS FRACTIONS
+Z    ['!' to disregard row]   X [negative values: upper limits]
+1    0.476    0.05
+2    0.256    0.05
+7    0.1636   0.02
+8    0.04003  0.005
+10   0.00119  0.0002
+  
+
+
