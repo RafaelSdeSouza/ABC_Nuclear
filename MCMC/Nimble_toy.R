@@ -43,7 +43,9 @@ Rfun = "toy_temp", returnType = double(1))
 # energy is in MeV, sqrt(Ecm)*sigma is in sqrt(MeV)b
 
 # Parameters
-obsy <- toy_model(34,12,456,78)
+obsy <- round(toy_model(34,12,456,78))
+
+
 N <- 5
 samplerCode <- nimbleCode({
 
@@ -93,8 +95,8 @@ conf$addMonitors(c('x1','x2','x3','x4','y.scat'))
 samplerMCMC <- buildMCMC(conf)
 compiledMCMC <- compileNimble(samplerMCMC,project = ourmodel,showCompilerOutput = TRUE)
 
-n.chains = 3
-n.iter = 30000
+n.chains = 1
+n.iter = 40000
 n.burnin = 25000
 
 system.time(
