@@ -93,9 +93,9 @@ conf$addMonitors(c('x1','x2','x3','x4','y.scat'))
 samplerMCMC <- buildMCMC(conf)
 compiledMCMC <- compileNimble(samplerMCMC,project = ourmodel,showCompilerOutput = TRUE)
 
-n.chains = 3
-n.iter = 30000
-n.burnin = 25000
+n.chains = 1
+n.iter = 60000
+n.burnin = 55000
 
 system.time(
   mcmcChain <- runMCMC(compiledMCMC,niter = n.iter, nchains = n.chains, nburnin = n.burnin,
