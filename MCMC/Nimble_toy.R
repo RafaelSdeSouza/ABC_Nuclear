@@ -34,7 +34,6 @@ toy_model <- nimbleRcall(function(x1 = double(0),x2 = double(0),x3 = double(0),
 ){},
 Rfun = "toy_temp", returnType = double(1))
 
-toy_model(34,12,456,78)
 
 ######################################################################
 ## DATA SETS
@@ -61,10 +60,10 @@ samplerCode <- nimbleCode({
   ###################
   # PRIORS
   ###################
-  x1 ~ dunif(0,500)
-  x2 ~ dunif(0,500)
-  x3 ~ dunif(0,500)
-  x4 ~ dunif(0,500)
+  x1 ~ dunif(0,1e3)
+  x2 ~ dunif(0,1e3)
+  x3 ~ dunif(0,1e3)
+  x4 ~ dunif(0,1e3)
   y.scat ~ dunif(0,10)
 }
 )
@@ -73,7 +72,8 @@ samplerData <- list(obsy = obsy)
 samplerConst <- list(N = N)
 
 
-samplerInits <- list(x1 = 1,x2 =1,x3=1,x4=1,
+samplerInits <- list(x1 = runif(1,0,500),x2 =runif(1,0,500),
+                      x3=runif(1,0,500),x4=runif(1,0,500),
                       y.scat = 0.1)
 ourmodel <- nimbleModel(code = samplerCode, constants = samplerConst,
                         data = samplerData, inits = samplerInits, check = FALSE
@@ -93,7 +93,7 @@ conf$addMonitors(c('x1','x2','x3','x4','y.scat'))
 samplerMCMC <- buildMCMC(conf)
 compiledMCMC <- compileNimble(samplerMCMC,project = ourmodel,showCompilerOutput = TRUE)
 
-n.chains = 1
+n.chains = 3
 n.iter = 30000
 n.burnin = 25000
 
@@ -102,7 +102,7 @@ system.time(
                        samplesAsCodaMCMC = TRUE)
 )
 
-plot(mcmcChain)
+summary(mcmcChain)
 
 
 pdf("MCMC_toy.pdf")
